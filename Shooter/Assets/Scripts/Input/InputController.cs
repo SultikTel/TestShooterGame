@@ -5,35 +5,37 @@ using UnityEngine.InputSystem;
 public class InputController : MonoBehaviour
 {
     public static InputController Instance { get; private set; }
-    [SerializeField] private PlayerInput _playerInput;
+    public PlayerControls actions;
 
-    public Vector2 wasd { get; private set; }
-    public event Action OnInteractPressed;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    public static void Init()
+    {
+        if (Instance != null) return;
+
+        GameObject inputController = new GameObject("InputController");
+        Instance = inputController.AddComponent<InputController>();
+        DontDestroyOnLoad(inputController);
+    }
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        _playerInput = GetComponent<PlayerInput>();
+
+        actions = new PlayerControls();
+        actions.Enable();
     }
 
-    public void WASD(InputAction.CallbackContext context)
+    private void OnDestroy()
     {
-        wasd = context.ReadValue<Vector2>();
-        Debug.Log(wasd);
-    }
-    public void Interact(InputAction.CallbackContext context)
-    {
-        if(context.phase == InputActionPhase.Performed) 
+        if (Instance == this)
         {
-            OnInteractPressed?.Invoke();
-            Debug.Log("das");
+            actions.Disable(); 
+            actions = null;
+            Instance = null;
         }
     }
 }
