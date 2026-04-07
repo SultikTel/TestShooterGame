@@ -1,41 +1,42 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class InputController : MonoBehaviour
+namespace Shooter.Input
 {
-    public static InputController Instance { get; private set; }
-    public PlayerControls actions;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    public static void Init()
+    public class InputController : MonoBehaviour
     {
-        if (Instance != null) return;
+        public static InputController Instance { get; private set; }
+        public PlayerControls actions;
 
-        GameObject inputController = new GameObject("InputController");
-        Instance = inputController.AddComponent<InputController>();
-        DontDestroyOnLoad(inputController);
-    }
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Init()
         {
-            Destroy(gameObject);
-            return;
+            if (Instance != null) return;
+
+            GameObject inputController = new GameObject("InputController");
+            Instance = inputController.AddComponent<InputController>();
+            DontDestroyOnLoad(inputController);
         }
 
-        actions = new PlayerControls();
-        actions.Enable();
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
+        private void Awake()
         {
-            actions.Disable(); 
-            actions = null;
-            Instance = null;
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            actions = new PlayerControls();
+            actions.Enable();
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                actions.Disable();
+                actions = null;
+                Instance = null;
+            }
         }
     }
 }
