@@ -619,6 +619,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 30ac698e-97a4-4ba9-9af2-cd4f30450442
     m_ActionName: Gameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d8f95c78-2079-420a-8b2d-71c1179ef7e9
+    m_ActionName: Gameplay/Jump[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KeyBoard
   m_DefaultActionMap: Gameplay
@@ -1304,7 +1308,7 @@ Animator:
   m_GameObject: {fileID: 7808259261535045734}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: aebf1eba44565b04ebee549db0eb5aa7, type: 2}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a1ea118aa73ee0b418aa7c51410530ed, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6685,9 +6689,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.2
-  m_Height: 1.8
+  m_Height: 1.7103581
   m_Direction: 1
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 0.844821, z: 0}
 --- !u!54 &9123255252998631735
 Rigidbody:
   m_ObjectHideFlags: 0

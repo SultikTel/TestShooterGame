@@ -16,6 +16,28 @@ namespace Shooter
             _camera = Camera.main.transform;
         }
 
+        private void OnEnable()
+        {
+            InputController.Instance.actions.Gameplay.Crouch.performed += Crouch;
+            InputController.Instance.actions.Gameplay.Jump.performed += Jump;
+        }
+
+        private void OnDisable()
+        {
+            InputController.Instance.actions.Gameplay.Crouch.performed -= Crouch;
+            InputController.Instance.actions.Gameplay.Jump.performed -= Jump;
+        }
+
+        private void Jump(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            Debug.Log("jump");
+        }
+
+        private void Crouch(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            Debug.Log("crouch");
+        }
+
         private void Update()
         {
             HandleRotation();
