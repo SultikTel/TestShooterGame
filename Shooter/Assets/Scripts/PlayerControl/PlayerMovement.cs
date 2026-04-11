@@ -1,7 +1,7 @@
 using Shooter.Input;
 using UnityEngine;
 
-namespace Shooter
+namespace Shooter.PlayerControl
 {
     public class PlayerMovement : MonoBehaviour
     {
@@ -51,23 +51,56 @@ namespace Shooter
         private void HandleMovement()
         {
             Vector2 moveInput = InputController.Instance.actions.Gameplay.Move.ReadValue<Vector2>();
-            Vector3 moveDirection = (_camera.forward * moveInput.y) + (_camera.right * moveInput.x);
+
+            Vector3 cameraForward = _camera.forward;
+            Vector3 cameraRight = _camera.right;
+
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 moveDirection =
+                cameraForward * moveInput.y +
+                cameraRight * moveInput.x;
+
             moveDirection.Normalize();
-            _rb.velocity = moveDirection * _moveSpeed;
+
+            Vector3 velocity = moveDirection * _moveSpeed;
+
+            velocity.y = _rb.velocity.y;
+
+            _rb.velocity = velocity;
         }
 
         private void HandleRotation()
         {
             Vector2 moveInput = InputController.Instance.actions.Gameplay.Move.ReadValue<Vector2>();
-            Vector3 targetDirection = (_camera.forward * moveInput.y) + (_camera.right * moveInput.x);
+
+            Vector3 cameraForward = _camera.forward;
+            Vector3 cameraRight = _camera.right;
+
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 targetDirection = cameraForward * moveInput.y + cameraRight * moveInput.x;
+
+            if (targetDirection.sqrMagnitude < 0.001f)
+                return;
+
             targetDirection.Normalize();
-            if (targetDirection == Vector3.zero)
-            {
-                targetDirection = transform.forward;
-            }
+
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-            Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-            transform.rotation = playerRotation;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                _rotationSpeed * Time.deltaTime
+            );
         }
     }
 }
