@@ -1,14 +1,17 @@
 using Shooter.Input;
+using System.Linq;
 using UnityEngine;
 
 namespace Shooter.PlayerControl
 {
     public class PlayerMovement : MonoBehaviour
     {
+        [Header("Parameters")]
         [SerializeField] private float _moveSpeed;
         [SerializeField] private float _rotationSpeed;
         private Transform _camera;
         private Rigidbody _rb;
+        public float lookX { get; private set; } 
 
         private void Awake()
         {
@@ -28,6 +31,17 @@ namespace Shooter.PlayerControl
             InputController.Instance.actions.Gameplay.Jump.performed -= Jump;
         }
 
+        private void Update()
+        {
+            HandleRotation();
+            UpdateLookValues();
+        }
+
+        private void FixedUpdate()
+        {
+            HandleMovement();
+        }
+
         private void Jump(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
             Debug.Log("jump");
@@ -38,14 +52,18 @@ namespace Shooter.PlayerControl
             Debug.Log("crouch");
         }
 
-        private void Update()
+        private void UpdateLookValues()
         {
-            HandleRotation();
-        }
+            Vector3 camForward = _camera.forward;
+            camForward.y = 0f;
+            camForward.Normalize();
 
-        private void FixedUpdate()
-        {
-            HandleMovement();
+            Vector3 playerForward = transform.forward;
+            playerForward.y = 0f;
+            playerForward.Normalize();
+
+            float yaw = Vector3.SignedAngle(playerForward, camForward, Vector3.up);
+            lookX = Mathf.Clamp(yaw / 40f, -1f, 1f);
         }
 
         private void HandleMovement()
@@ -76,8 +94,6 @@ namespace Shooter.PlayerControl
 
         private void HandleRotation()
         {
-            Vector2 moveInput = InputController.Instance.actions.Gameplay.Move.ReadValue<Vector2>();
-
             Vector3 cameraForward = _camera.forward;
             Vector3 cameraRight = _camera.right;
 
@@ -87,14 +103,14 @@ namespace Shooter.PlayerControl
             cameraForward.Normalize();
             cameraRight.Normalize();
 
-            Vector3 targetDirection = cameraForward * moveInput.y + cameraRight * moveInput.x;
+            Vector3 targetDirection = cameraForward  + cameraRight;
 
             if (targetDirection.sqrMagnitude < 0.001f)
                 return;
 
             targetDirection.Normalize();
 
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+            Quaternion targetRotation = Quaternion.Euler(0f, _camera.eulerAngles.y, 0f);
 
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,

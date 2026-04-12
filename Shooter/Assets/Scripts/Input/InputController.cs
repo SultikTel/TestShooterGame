@@ -29,14 +29,9 @@ namespace Shooter.Input
             actions.Enable();
         }
 
-        private void OnDestroy()
+        private void OnApplicationQuit()
         {
-            if (Instance == this)
-            {
-                actions.Disable();
-                actions = null;
-                Instance = null;
-            }
+            actions?.Disable();
         }
     }
 }
