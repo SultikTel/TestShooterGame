@@ -1,17 +1,17 @@
 using Shooter.Input;
-using System.Linq;
 using UnityEngine;
 
 namespace Shooter.PlayerControl
 {
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Parameters")]
-        [SerializeField] private float _moveSpeed;
-        [SerializeField] private float _rotationSpeed;
+        [SerializeField] private PlayerMoveConfig _playerMoveConfig;
+        [SerializeField] private PlayerCollider _playerCollider;
         private Transform _camera;
         private Rigidbody _rb;
-        public float lookX { get; private set; } 
+        private bool _isCrouching;
+        public float lookX { get; private set; }
+
 
         private void Awake()
         {
@@ -44,12 +44,21 @@ namespace Shooter.PlayerControl
 
         private void Jump(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            Debug.Log("jump");
+            _rb.AddForce(Vector3.up * _playerMoveConfig.JumpForce);
+            Debug.Log("ADS");
         }
 
         private void Crouch(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            Debug.Log("crouch");
+            if (_isCrouching)
+            {
+                _playerCollider.SetStand();
+            }
+            else
+            {
+                _playerCollider.SetCrouch();
+            }
+            _isCrouching = !_isCrouching;
         }
 
         private void UpdateLookValues()
@@ -85,7 +94,7 @@ namespace Shooter.PlayerControl
 
             moveDirection.Normalize();
 
-            Vector3 velocity = moveDirection * _moveSpeed;
+            Vector3 velocity = moveDirection * _playerMoveConfig.MoveSpeed;
 
             velocity.y = _rb.velocity.y;
 
@@ -103,7 +112,7 @@ namespace Shooter.PlayerControl
             cameraForward.Normalize();
             cameraRight.Normalize();
 
-            Vector3 targetDirection = cameraForward  + cameraRight;
+            Vector3 targetDirection = cameraForward + cameraRight;
 
             if (targetDirection.sqrMagnitude < 0.001f)
                 return;
@@ -115,7 +124,7 @@ namespace Shooter.PlayerControl
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
-                _rotationSpeed * Time.deltaTime
+                _playerMoveConfig.RotationSpeed * Time.deltaTime
             );
         }
     }
