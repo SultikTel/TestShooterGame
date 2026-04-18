@@ -779,7 +779,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce252d8141387694dae8993951b69e5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _capsule: {fileID: 1482206905}
   _standHeight: 1.8
   _crouchHeight: 1
   _radius: 0.3
@@ -6549,6 +6548,7 @@ GameObject:
   - component: {fileID: 9123255252998631736}
   - component: {fileID: 2245954179953182395}
   - component: {fileID: 9123255252998631735}
+  - component: {fileID: 9123255252998631738}
   m_Layer: 0
   m_Name: MainHero
   m_TagString: Untagged
@@ -7194,9 +7194,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &9123255252998631736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7227,6 +7227,18 @@ MonoBehaviour:
   _cameraController: {fileID: 674225646}
   _animator: {fileID: 2245954179953182395}
   _damp: 0.05
+--- !u!114 &9123255252998631738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7808259261535045734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8990aad87eae3804fb67a0ec3a151f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9188456108715962545
 Transform:
   m_ObjectHideFlags: 0

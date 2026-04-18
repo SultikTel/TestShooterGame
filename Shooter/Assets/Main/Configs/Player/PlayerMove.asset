@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f3cd98d0a8e314494cfbc2a746ca41, type: 3}
   m_Name: PlayerMove
   m_EditorClassIdentifier: 
-  _moveSpeed: 0
-  _rotationSpeed: 0
+  _moveSpeed: 5
+  _rotationSpeed: 10
   _jumpForce: 90
   _groundCheckDistance: 0
   _crouchSpeed: 0

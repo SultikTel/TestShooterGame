@@ -4,15 +4,19 @@ namespace Shooter.PlayerControl
 {
     public class PlayerMovementStateMachine : StateMachine
     {
+        public PlayerMovement PlayerMovement { get; }
         public PlayerIdlingState IdlingState { get; }
         public PlayerWalkingState WalkingState { get; }
         public PlayerRunningState RunningState { get; }
 
-        public PlayerMovementStateMachine()
+        public PlayerMovementStateMachine(PlayerMovement playerMovement)
         {
-            IdlingState = new();
-            WalkingState = new();
-            RunningState = new();
+            PlayerMovement = playerMovement;
+
+            IdlingState = new(this);
+
+            WalkingState = new(this);
+            RunningState = new(this);
         }
     }
 }

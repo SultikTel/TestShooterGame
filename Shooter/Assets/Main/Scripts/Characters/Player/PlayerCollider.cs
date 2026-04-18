@@ -2,10 +2,9 @@ using UnityEngine;
 
 namespace Shooter.PlayerControl
 {
+    [RequireComponent(typeof(Collider))]
     public class PlayerCollider : MonoBehaviour
     {
-        [SerializeField] private CapsuleCollider _capsule;
-
         [Header("Sizes")]
         [SerializeField] private float _standHeight;
         [SerializeField] private float _crouchHeight;
@@ -13,9 +12,12 @@ namespace Shooter.PlayerControl
 
         private Vector3 _standCenter;
         private Vector3 _crouchCenter;
+        private CapsuleCollider _capsule;
 
         private void Awake()
         {
+            _capsule = GetComponent<CapsuleCollider>();
+
             _standCenter = new Vector3(0f, _standHeight / 2f, 0f);
             _crouchCenter = new Vector3(0f, _crouchHeight / 2f, 0f);
 
