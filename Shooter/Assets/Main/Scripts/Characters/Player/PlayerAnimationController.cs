@@ -20,19 +20,19 @@ namespace Shooter.PlayerControl
 
         private void UpdateLookAnimation()
         {
-            _animator.SetFloat(
-                "LookSides",
-                _playerMovement.lookX,
-                _damp,
-                Time.deltaTime
-            );
+            //_animator.SetFloat(
+            //    "LookSides",
+            //    _playerMovement.lookX,
+            //    _damp,
+            //    Time.deltaTime
+            //);
 
-            _animator.SetFloat(
-                "LookUpDown",
-                _cameraController.lookY,
-                _damp,
-                Time.deltaTime
-            );
+            //_animator.SetFloat(
+            //    "LookUpDown",
+            //    _cameraController.lookY,
+            //    _damp,
+            //    Time.deltaTime
+            //);
         }
     }
 }

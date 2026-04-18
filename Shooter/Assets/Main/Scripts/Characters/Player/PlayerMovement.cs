@@ -3,8 +3,11 @@ using UnityEngine;
 
 namespace Shooter.PlayerControl
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class PlayerMovement : MonoBehaviour
     {
+        public PlayerInput Input { get; private set; }
+
         [SerializeField] private PlayerMoveConfig _playerMoveConfig;
         [SerializeField] private PlayerCollider _playerCollider;
         private Transform _camera;
@@ -13,22 +16,24 @@ namespace Shooter.PlayerControl
         public float lookX { get; private set; }
 
 
+
         private void Awake()
         {
+            Input = GetComponent<PlayerInput>();
             _rb = GetComponent<Rigidbody>();
             _camera = Camera.main.transform;
         }
 
         private void OnEnable()
         {
-            InputController.Instance.actions.Gameplay.Crouch.performed += Crouch;
-            InputController.Instance.actions.Gameplay.Jump.performed += Jump;
+            Input.PlayerControls.Crouch.performed += Crouch;
+            Input.PlayerControls.Jump.performed += Jump;
         }
 
         private void OnDisable()
         {
-            InputController.Instance.actions.Gameplay.Crouch.performed -= Crouch;
-            InputController.Instance.actions.Gameplay.Jump.performed -= Jump;
+            Input.PlayerControls.Crouch.performed -= Crouch;
+            Input.PlayerControls.Jump.performed -= Jump;
         }
 
         private void Update()
@@ -127,5 +132,30 @@ namespace Shooter.PlayerControl
                 _playerMoveConfig.RotationSpeed * Time.deltaTime
             );
         }
+
+
+        //private PlayerMovementStateMachine _movementStateMachine;
+
+        //private void Awake()
+        //{
+        //    _movementStateMachine = new();
+        //}
+
+        //private void Start()
+        //{
+        //    _movementStateMachine.ChangeState(_movementStateMachine.IdlingState);
+        //}
+
+        //private void Update()
+        //{
+        //    _movementStateMachine.HandleInput();
+
+        //    _movementStateMachine.Update();
+        //}
+
+        //private void FixedUpdate()
+        //{
+        //    _movementStateMachine.PhysicsUpdate();
+        //}
     }
 }
