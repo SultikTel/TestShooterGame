@@ -4,12 +4,12 @@ namespace Shooter.PlayerControl
 {
     public class PlayerMovementStateMachine : StateMachine
     {
-        public PlayerMovement PlayerMovement { get; }
+        public PlayerController PlayerMovement { get; }
         public PlayerIdlingState IdlingState { get; }
         public PlayerWalkingState WalkingState { get; }
         public PlayerRunningState RunningState { get; }
 
-        public PlayerMovementStateMachine(PlayerMovement playerMovement)
+        public PlayerMovementStateMachine(PlayerController playerMovement)
         {
             PlayerMovement = playerMovement;
 

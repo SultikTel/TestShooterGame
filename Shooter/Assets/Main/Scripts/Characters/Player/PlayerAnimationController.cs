@@ -6,7 +6,7 @@ namespace Shooter.PlayerControl
     public class PlayerAnimationController : MonoBehaviour
     {
         [Header("Refs")]
-        [SerializeField] private PlayerMovement _playerMovement;
+        [SerializeField] private PlayerController _playerMovement;
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Animator _animator;
 

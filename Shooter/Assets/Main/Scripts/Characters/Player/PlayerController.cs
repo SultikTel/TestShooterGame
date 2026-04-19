@@ -5,18 +5,15 @@ namespace Shooter.PlayerControl
 {
     [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         public PlayerInput Input { get; private set; }
-
         public Rigidbody RigidBody { get; private set; }
 
         [SerializeField] private PlayerMoveConfig _playerMoveConfig;
         public PlayerMoveConfig PlayerMoveConfig => _playerMoveConfig;
-        [SerializeField] private PlayerCollider _playerCollider;
-        private Transform _camera;
-        private bool _isCrouching;
-        public float lookX { get; private set; }
+        private PlayerCollider _playerCollider;
+        private CameraController _cameraController;
 
         private PlayerMovementStateMachine _movementStateMachine;
 
@@ -25,12 +22,14 @@ namespace Shooter.PlayerControl
             _movementStateMachine = new(this);
             Input = GetComponent<PlayerInput>();
             RigidBody = GetComponent<Rigidbody>();
-            _camera = Camera.main.transform;
+            _cameraController = GetComponentInChildren<CameraController>();
+            _playerCollider = GetComponentInChildren<PlayerCollider>();
         }
 
         private void Start()
         {
-            _movementStateMachine.ChangeState(_movementStateMachine.RunningState);
+            _movementStateMachine.ChangeState(_movementStateMachine.IdlingState);
+            _cameraController.Init(this);
         }
 
         private void Update()
