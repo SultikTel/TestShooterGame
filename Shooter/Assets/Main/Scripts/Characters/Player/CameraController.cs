@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Shooter.Input;
+using UnityEngine;
 
 namespace Shooter.PlayerControl
 {
@@ -8,8 +9,9 @@ namespace Shooter.PlayerControl
         [SerializeField] private PlayerCameraConfig _playerCameraConfig;
         [SerializeField] private LayerMask _enviromentLayer;
 
-        private PlayerController _playerMovement;
+        private PlayerInput _playerInput;
         private Transform _cameraTransform;
+        public Transform CameraTransform => _cameraTransform;
 
         private float _rotX;
         private float _rotY;
@@ -23,11 +25,15 @@ namespace Shooter.PlayerControl
         private float _currentDistance;
         private float _distanceVelocity;
 
+        private float _currentTargetZoomDistance;
+
         public float lookY { get; private set; }
 
         private void Awake()
         {
             _cameraTransform = GetComponentInChildren<Camera>().transform;
+
+            _currentTargetZoomDistance = _playerCameraConfig.CurrentZoom;
         }
 
         private void Start()
@@ -44,7 +50,7 @@ namespace Shooter.PlayerControl
 
         private void Update()
         {
-            Vector2 input = _playerMovement.Input.PlayerControls.Camera.ReadValue<Vector2>();
+            Vector2 input = _playerInput.PlayerControls.Camera.ReadValue<Vector2>();
 
             float mouseX = input.x * _playerCameraConfig.SensitivityX * Time.deltaTime;
             float mouseY = input.y * _playerCameraConfig.SensitivityY * Time.deltaTime;
@@ -53,21 +59,19 @@ namespace Shooter.PlayerControl
             _rotX -= mouseY;
 
             _rotX = Mathf.Clamp(_rotX, _playerCameraConfig.YMin, _playerCameraConfig.YMax);
+
         }
 
         private void LateUpdate()
         {
-            // сглаживание вращения
             _currentX = Mathf.SmoothDamp(_currentX, _rotX, ref _velX, _playerCameraConfig.SmoothTime);
             _currentY = Mathf.SmoothDamp(_currentY, _rotY, ref _velY, _playerCameraConfig.SmoothTime);
 
             transform.rotation = Quaternion.Euler(_currentX, _currentY, 0);
 
-            // нормализованный lookY
             float t = Mathf.InverseLerp(_playerCameraConfig.YMin, _playerCameraConfig.YMax, _currentX);
             lookY = (t * 2f - 1f) * -1f;
 
-            // === КОЛЛИЗИЯ КАМЕРЫ С ПЛАВНОСТЬЮ ===
             float targetDistance;
 
             if (Physics.Linecast(transform.position, _cameraTransform.position, out RaycastHit hit, _enviromentLayer))
@@ -83,22 +87,48 @@ namespace Shooter.PlayerControl
                 targetDistance = _playerCameraConfig.CurrentZoom;
             }
 
-                // разное сглаживание (быстро приближается, медленно отдаляется)
-                float smoothTime = targetDistance < _currentDistance ? 0.05f : _playerCameraConfig.SmoothTime;
+            float smoothTime = targetDistance < _currentDistance ? 0.05f : _playerCameraConfig.SmoothTime;
 
-                _currentDistance = Mathf.SmoothDamp(
-                    _currentDistance,
-                    targetDistance,
-                    ref _distanceVelocity,
-                    smoothTime
-                );
+            _currentDistance = Mathf.SmoothDamp(
+                _currentDistance,
+                targetDistance,
+                ref _distanceVelocity,
+                smoothTime
+            );
 
-                _cameraTransform.localPosition = new Vector3(0, 0, -_currentDistance);
-            }
+            _cameraTransform.localPosition = new Vector3(0, 0, -_currentDistance);
+        }
 
-        public void Init(PlayerController playerMovement)
+        public void Init(PlayerInput playerInput)
         {
-            _playerMovement = playerMovement;
+            _playerInput = playerInput;
+        }
+
+        private void Zoom()
+        {
+            float zoomInput = _playerInput.PlayerControls.Zoom.ReadValue<float>();
+
+            _currentTargetZoomDistance += zoomInput * _playerCameraConfig.ZoomSensitivity;
+
+            _currentTargetZoomDistance = Mathf.Clamp(
+                _currentTargetZoomDistance,
+                _playerCameraConfig.MinZoom,
+                _playerCameraConfig.MaxZoom
+            );
+
+            float currentZ = _cameraTransform.localPosition.z;
+
+            float newZ = Mathf.Lerp(
+                currentZ,
+                _currentTargetZoomDistance,
+                _playerCameraConfig.ZoomSmoothing * Time.deltaTime
+            );
+            Debug.Log(_currentTargetZoomDistance);
+            _cameraTransform.localPosition = new Vector3(
+                _cameraTransform.localPosition.x,
+                _cameraTransform.localPosition.y,
+                newZ
+            );
         }
     }
 }

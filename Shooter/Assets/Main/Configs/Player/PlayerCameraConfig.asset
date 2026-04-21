@@ -19,6 +19,8 @@ MonoBehaviour:
   _smoothTime: 0.1
   _minZoom: 2
   _maxZoom: 4
+  _zoomSensitivity: 2
+  _zoomSmoothing: 10
   _currentZoom: 3
   _currentSensitivityX: 120
   _currentSensitivityY: 120

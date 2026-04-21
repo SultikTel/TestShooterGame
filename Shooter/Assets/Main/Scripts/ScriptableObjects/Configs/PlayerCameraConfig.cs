@@ -26,6 +26,10 @@ namespace Shooter.PlayerControl
         public float MinZoom => _minZoom;
         [SerializeField] private float _maxZoom;
         public float MaxZoom => _maxZoom;
+        [SerializeField] private float _zoomSensitivity;
+        public float ZoomSensitivity => _zoomSensitivity;
+        [SerializeField] private float _zoomSmoothing;
+        public float ZoomSmoothing => _zoomSmoothing;
 
         [Header("PlayerPreferences")]
         [SerializeField] private float _currentZoom;

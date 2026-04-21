@@ -9,8 +9,6 @@ namespace Shooter.PlayerControl
 
         protected Vector2 _movementInput;
 
-        private float _speedModifier = 1f;
-
         public PlayerMovementState(PlayerMovementStateMachine playerMovementStateMachine)
         {
             _stateMachine = playerMovementStateMachine;
@@ -41,6 +39,7 @@ namespace Shooter.PlayerControl
 
         private void Move()
         {
+            Debug.Log(_stateMachine.PlayerMovement.CameraController.CameraTransform.forward.x);
             if (_movementInput == Vector2.zero) return;
 
             Vector3 movementDirection = GetMovementInputDirection();
@@ -52,6 +51,7 @@ namespace Shooter.PlayerControl
             _stateMachine.PlayerMovement.RigidBody.AddForce(movementDirection * movementSpeed - currentPlayerHorizontalVelocity, ForceMode.VelocityChange);
         }
 
+
         private void ReadMovementInput()
         {
             _movementInput = _stateMachine.PlayerMovement.Input.PlayerControls.Move.ReadValue<Vector2>();
@@ -59,12 +59,27 @@ namespace Shooter.PlayerControl
 
         protected float GetMovementSpeed()
         {
-            return _speedModifier * _stateMachine.PlayerMovement.PlayerMoveConfig.MoveSpeed;
+            return _stateMachine.PlayerMovement.PlayerMoveConfig.MoveSpeed;
         }
 
         protected Vector3 GetMovementInputDirection()
         {
-            return new Vector3(_movementInput.x, 0, _movementInput.y);
+            Transform cameraTransform = _stateMachine.PlayerMovement.CameraController.CameraTransform;
+
+            Vector3 cameraForward = cameraTransform.forward;
+            Vector3 cameraRight = cameraTransform.right;
+
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 movementDirection =
+                cameraForward * _movementInput.y +
+                cameraRight * _movementInput.x;
+
+            return movementDirection;
         }
 
 
